@@ -268,8 +268,8 @@ async def api_create_book(request, *, name, author, content):
     #check_admin(request)
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
-    if not summary or not summary.strip():
-        raise APIValueError('summary', 'summary cannot be empty.')
+    if not author or not author.strip():
+        raise APIValueError('author', 'author cannot be empty.')
     if not content or not content.strip():
         raise APIValueError('content', 'content cannot be empty.')
     book = Book(name=name.strip(), author=author.strip(), content=content.strip())
