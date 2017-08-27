@@ -264,7 +264,7 @@ async def api_create_blog(request, *, name, summary, content):
     return blog
 
 @post('/api/book')
-async def api_create_book(request, *, name, summary, content):
+async def api_create_book(request, *, name, author, content):
     #check_admin(request)
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
