@@ -85,7 +85,7 @@ $(function() {
                         <a target="_blank" v-attr="href: '/book/'+book.id" v-text="book.name"></a>
                     </td>
                     <td>
-                        <a target="_blank" v-attr="href: '/user/'+book.user_id" v-text="book.user_name"></a>
+                        <a target="_blank" v-attr="href: '/user/'+book.user_id" v-text="book.author"></a>
                     </td>
                     <td>
                         <span v-text="book.created_at.toDateTime()"></span>

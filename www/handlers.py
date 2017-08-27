@@ -424,17 +424,17 @@ async def api_update_blog(id, request, *, name, summary, content):
     return blog
 
 @post('/api/book/{id}')
-async def api_update_book(id, request, *, name, summary, content):
+async def api_update_book(id, request, *, name, author, content):
     #check_admin(request)
     book = await Book.find(id)
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
-    if not summary or not summary.strip():
-        raise APIValueError('summary', 'summary cannot be empty.')
+    if not author or not author.strip():
+        raise APIValueError('author', 'author cannot be empty.')
     if not content or not content.strip():
         raise APIValueError('content', 'content cannot be empty.')
     book.name = name.strip()
-    book.summary = summary.strip()
+    book.author = author.strip()
     book.content = content.strip()
     await book.update()
     return book
