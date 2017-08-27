@@ -1,0 +1,23 @@
+{% extends '__base__.html' %}
+
+{% block title %}Blogs{% endblock %}
+
+
+{% block content %}
+    
+
+    <div class="uk-width-medium-3-4">  
+        {% for blog in blogs %}
+            <article class="uk-article">
+                <h2>{{ blog.name }}</h2>
+                <p class="uk-article-meta">Published {{ blog.created_at|datetime}}</p>
+                <p>{{ blog.summary }}</p>
+                <p><a href="/blog/{{ blog.id }}">Continue <i class="uk-icon-angle-double-right"></i></a></p>
+            </article>
+            <hr class="uk-article-divider">
+        {% endfor %}
+        <a href="/manage/blog/create" class="uk-button uk-button-small"><i class="uk-icon-plus"></i>  New</a>
+        {{ pagination('/?action=blogs&page=', page) }}
+    </div>
+
+{% endblock %}

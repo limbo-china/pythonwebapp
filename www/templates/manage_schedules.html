@@ -1,0 +1,98 @@
+{% extends '__base__.html' %}
+
+{% block title %}Manage Schedules{% endblock %}
+
+{% block beforehead %}
+
+<script>
+function initVM(data) {
+    var vm = new Vue({
+        el: '#vm',
+        data: {
+            schedules: data.schedules,
+            page: data.page
+        },
+        methods: {
+            edit_schedule: function (schedule) {
+                location.assign('/manage/schedule/edit?id=' + schedule.id);
+            },
+            delete_schedule: function (schedule) {
+                if (confirm('Confirm to Delete ?')) {
+                    postJSON('/api/schedule/' + schedule.id + '/delete', function (err, r) {
+                        if (err) {
+                            return alert(err.message || err.error || err);
+                        }
+                        refresh();
+                    });
+                }
+            }
+        }
+    });
+    $('#vm').show();
+}
+$(function() {
+    getJSON('/api/schedules', {
+        page: {{ page_index }}
+    }, function (err, results) {
+        if (err) {
+            return fatal(err);
+        }
+        $('#loading').hide();
+
+        console.log("page:%s",results.page);
+
+        initVM(results);
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-1-1 uk-margin-bottom">
+        <div class="uk-panel uk-panel-box">
+            <ul class="uk-breadcrumb">
+                <li class="uk-active"><span>Schedule</span></li>
+                <li><a href="/manage/blogs">Blog</li>           
+                <li><a href="/manage/readings">Reading</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="error" class="uk-width-1-1">
+    </div>
+
+    <div id="loading" class="uk-width-1-1 uk-text-center">
+        <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> Loading...</span>
+    </div>
+
+    <div id="vm" class="uk-width-1-1">
+        <a href="/manage/schedule/create" class="uk-button uk-button-small"><i class="uk-icon-plus"></i> New</a>
+
+        <table class="uk-table uk-table-hover">
+            <thead>
+                <tr>
+                    <th class="uk-width-2-10">Time</th>
+                    <th class="uk-width-1-10">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-repeat="schedule: schedules" >
+                    <td>
+                        <a v-attr="href: '/schedule/'+schedule.id" v-text="schedule.created_at.toDateTime()"></a>
+                    </td>
+
+                    <td>
+                        <a href="#0" v-on="click: edit_schedule(schedule)"><i class="uk-icon-edit"></i>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="#0" v-on="click: delete_schedule(schedule)"><i class="uk-icon-trash-o"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{ pagination('/manage/schedules?page=', page) }}
+    </div>
+
+{% endblock %}

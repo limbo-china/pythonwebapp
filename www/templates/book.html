@@ -1,0 +1,22 @@
+{% extends '__base__.html' %}
+
+{% block title %}Book{% endblock %}
+
+{% block beforehead %}
+
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-medium-3-4">
+        <article class="uk-article">
+            <p class="uk-article-meta">Published {{ book.created_at|datetime }}</p>
+            {{ book.html_content|safe }}
+        </article>
+
+        <hr class="uk-article-divider">
+    </div>
+
+
+{% endblock %}

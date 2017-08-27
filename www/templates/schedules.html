@@ -1,0 +1,49 @@
+{% extends '__base__.html' %}
+
+{% block title %}Schedules{% endblock %}
+
+{% block beforehead %}
+
+<script type="text/javascript" ></script>
+
+<script>
+function initVM(data) {
+    var vm = new Vue({
+        el: '#vm',
+        data: {
+            schedules: data.schedules,
+            page: data.page
+        }
+    });
+    $('#vm').show();
+}
+$(function () {
+    getJSON('/api/schedules', {
+        page: {{ page_index }}
+    },function (err, results) {
+        if (err) {
+            return fatal(err);
+        }
+        $('#loading').hide();
+        initVM(results);
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+    
+
+    <div id="vm" class="uk-width-medium-3-4">
+            <article v-repeat="schedule: schedules" class="uk-article">
+                <h2 v-text="schedule.created_at.toDateTime().substr(0,10)"></h2>
+                <p><a v-attr=" href:'/schedule/'+ schedule.id ">Check <i class="uk-icon-angle-double-right"></i></a></p>
+            </article>
+            <hr class="uk-article-divider">
+            <a href="/manage/schedule/create" class="uk-button uk-button-small"><i class="uk-icon-plus"></i>  New</a>
+            {{ pagination('/?action=schedules&page=', page) }}
+    </div>
+
+
+{% endblock %}

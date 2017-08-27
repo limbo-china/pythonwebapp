@@ -1,0 +1,23 @@
+{% extends '__base__.html' %}
+
+{% block title %}Books{% endblock %}
+
+
+{% block content %}
+    
+
+    <div class="uk-width-medium-3-4">  
+        {% for book in books %}
+            <article class="uk-article">
+                <h2>{{ book.name }}</h2>
+                <p class="uk-article-meta">Published {{ book.created_at|datetime}}</p>
+                <p>{{ book.summary }}</p>
+                <p><a href="/book/{{ book.id }}">Continue <i class="uk-icon-angle-double-right"></i></a></p>
+            </article>
+            <hr class="uk-article-divider">
+        {% endfor %}
+        <a href="/manage/book/create" class="uk-button uk-button-small"><i class="uk-icon-plus"></i>  New</a>
+        {{ pagination('/?action=books&page=', page) }}
+    </div>
+
+{% endblock %}

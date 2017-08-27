@@ -1,0 +1,24 @@
+{% extends '__base__.html' %}
+
+{% block title %}{{ reading.name }}{% endblock %}
+
+{% block beforehead %}
+
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-medium-3-4">
+        <article class="uk-article">
+            <h2>{{ reading.name }}</h2>
+            <p class="uk-article-meta">Published {{ reading.created_at|datetime }}</p>
+            <h6>Author:  {{ reading.author }}</h6>
+            {{ reading.html_content|safe }}
+        </article>
+
+        <hr class="uk-article-divider">
+
+    </div>
+
+{% endblock %}

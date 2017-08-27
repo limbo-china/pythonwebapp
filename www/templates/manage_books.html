@@ -1,0 +1,105 @@
+{% extends '__base__.html' %}
+
+{% block title %}Manage Books{% endblock %}
+
+{% block beforehead %}
+
+<script>
+function initVM(data) {
+    var vm = new Vue({
+        el: '#vm',
+        data: {
+            books: data.books,
+            page: data.page
+        },
+        methods: {
+            edit_book: function (book) {
+                location.assign('/manage/book/edit?id=' + book.id);
+            },
+            delete_book: function (book) {
+                if (confirm('Confirm to Delete' + book.name + '?')) {
+                    postJSON('/api/book/' + book.id + '/delete', function (err, r) {
+                        if (err) {
+                            return alert(err.message || err.error || err);
+                        }
+                        refresh();
+                    });
+                }
+            }
+        }
+    });
+    $('#vm').show();
+}
+$(function() {
+    getJSON('/api/books', {
+        page: {{ page_index }}
+    }, function (err, results) {
+        if (err) {
+            return fatal(err);
+        }
+        $('#loading').hide();
+
+        console.log("page:%s",results.page);
+
+        initVM(results);
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-1-1 uk-margin-bottom">
+        <div class="uk-panel uk-panel-box">
+            <ul class="uk-breadcrumb">
+                <li><a href="/manage/schedules">Schedule</a></li>
+                <li class="uk-active"><span>Book</span></li>
+                <li><a href="/manage/readings">Reading</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="error" class="uk-width-1-1">
+    </div>
+
+    <div id="loading" class="uk-width-1-1 uk-text-center">
+        <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> Loading...</span>
+    </div>
+
+    <div id="vm" class="uk-width-1-1">
+        <a href="/manage/book/create" class="uk-button uk-button-small"><i class="uk-icon-plus"></i> New</a>
+
+        <table class="uk-table uk-table-hover">
+            <thead>
+                <tr>
+                    <th class="uk-width-5-10">Title</th>
+                    <th class="uk-width-2-10">Author</th>
+                    <th class="uk-width-2-10">Time</th>
+                    <th class="uk-width-1-10">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-repeat="book: books" >
+                    <td>
+                        <a target="_blank" v-attr="href: '/book/'+book.id" v-text="book.name"></a>
+                    </td>
+                    <td>
+                        <a target="_blank" v-attr="href: '/user/'+book.user_id" v-text="book.user_name"></a>
+                    </td>
+                    <td>
+                        <span v-text="book.created_at.toDateTime()"></span>
+                    </td>
+                    <td>
+                        <a href="#0" v-on="click: edit_book(book)"><i class="uk-icon-edit"></i>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="#0" v-on="click: delete_book(book)"><i class="uk-icon-trash-o"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{ pagination('/manage/books?page=', page) }}
+    </div>
+
+{% endblock %}

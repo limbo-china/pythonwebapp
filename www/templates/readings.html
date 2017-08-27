@@ -1,0 +1,23 @@
+{% extends '__base__.html' %}
+
+{% block title %}Readings{% endblock %}
+
+
+{% block content %}
+    
+
+    <div class="uk-width-medium-3-4">  
+        {% for reading in readings %}
+            <article class="uk-article">
+                <h2>{{ reading.name }}</h2>
+                <p class="uk-article-meta">Published {{ reading.created_at|datetime}}</p>
+                <p>{{ reading.author }}</p>
+                <p><a href="/reading/{{ reading.id }}">Continue <i class="uk-icon-angle-double-right"></i></a></p>
+            </article>
+            <hr class="uk-article-divider">
+        {% endfor %}
+        <a href="/manage/reading/create" class="uk-button uk-button-small"><i class="uk-icon-plus"></i>  New</a>
+        {{ pagination('/?action=readings&page=', page) }}
+    </div>
+
+{% endblock %}

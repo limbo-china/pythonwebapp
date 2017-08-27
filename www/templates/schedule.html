@@ -1,0 +1,22 @@
+{% extends '__base__.html' %}
+
+{% block title %}Schedule{% endblock %}
+
+{% block beforehead %}
+
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-medium-3-4">
+        <article class="uk-article">
+            <p class="uk-article-meta">Published {{ schedule.created_at|datetime }}</p>
+            {{ schedule.html_content|safe }}
+        </article>
+
+        <hr class="uk-article-divider">
+    </div>
+
+
+{% endblock %}

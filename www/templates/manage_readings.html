@@ -1,0 +1,105 @@
+{% extends '__base__.html' %}
+
+{% block title %}Manage Readings{% endblock %}
+
+{% block beforehead %}
+
+<script>
+function initVM(data) {
+    var vm = new Vue({
+        el: '#vm',
+        data: {
+            readings: data.readings,
+            page: data.page
+        },
+        methods: {
+            edit_reading: function (reading) {
+                location.assign('/manage/reading/edit?id=' + reading.id);
+            },
+            delete_reading: function (reading) {
+                if (confirm('Confirm to Delete' + reading.name + '?')) {
+                    postJSON('/api/reading/' + reading.id + '/delete', function (err, r) {
+                        if (err) {
+                            return alert(err.message || err.error || err);
+                        }
+                        refresh();
+                    });
+                }
+            }
+        }
+    });
+    $('#vm').show();
+}
+$(function() {
+    getJSON('/api/readings', {
+        page: {{ page_index }}
+    }, function (err, results) {
+        if (err) {
+            return fatal(err);
+        }
+        $('#loading').hide();
+
+        console.log("page:%s",results.page);
+
+        initVM(results);
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-1-1 uk-margin-bottom">
+        <div class="uk-panel uk-panel-box">
+            <ul class="uk-breadcrumb">
+                <li><a href="/manage/schedule/create">Schedule</a></li>     
+                <li><a href="/manage/blog/create">Blog</a></li>
+                <li class="uk-active">Reading</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="error" class="uk-width-1-1">
+    </div>
+
+    <div id="loading" class="uk-width-1-1 uk-text-center">
+        <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> Loading...</span>
+    </div>
+
+    <div id="vm" class="uk-width-1-1">
+        <a href="/manage/reading/create" class="uk-button uk-button-small"><i class="uk-icon-plus"></i> New</a>
+
+        <table class="uk-table uk-table-hover">
+            <thead>
+                <tr>
+                    <th class="uk-width-5-10">Title</th>
+                    <th class="uk-width-2-10">Author</th>
+                    <th class="uk-width-2-10">Time</th>
+                    <th class="uk-width-1-10">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-repeat="reading: readings" >
+                    <td>
+                        <a target="_blank" v-attr="href: '/reading/'+reading.id" v-text="reading.name"></a>
+                    </td>
+                    <td>
+                        <a target="_blank" v-text="reading.author"></a>
+                    </td>
+                    <td>
+                        <span v-text="reading.created_at.toDateTime()"></span>
+                    </td>
+                    <td>
+                        <a href="#0" v-on="click: edit_reading(reading)"><i class="uk-icon-edit"></i>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="#0" v-on="click: delete_reading(reading)"><i class="uk-icon-trash-o"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{ pagination('/manage/readings?page=', page) }}
+    </div>
+
+{% endblock %}
