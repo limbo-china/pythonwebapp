@@ -272,7 +272,7 @@ async def api_create_book(request, *, name, summary, content):
         raise APIValueError('summary', 'summary cannot be empty.')
     if not content or not content.strip():
         raise APIValueError('content', 'content cannot be empty.')
-    book = Book(user_id='limbo', user_name='limbo', user_image='limbo', name=name.strip(), summary=summary.strip(), content=content.strip())
+    book = Book(name=name.strip(), author=author.strip(), content=content.strip())
     await book.save()
     return book
 
