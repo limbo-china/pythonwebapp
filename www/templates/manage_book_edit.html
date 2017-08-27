@@ -1,0 +1,105 @@
+{% extends '__base__.html' %}
+
+{% block title %}Edit Book{% endblock %}
+
+{% block beforehead %}
+
+<script type="text/javascript" ></script>
+
+<script>
+var
+    ID = '{{ id }}',
+    action = '{{ action }}';
+function initVM(book) {
+    var vm = new Vue({
+        el: '#vm',
+        data: book,
+        methods: {
+            submit: function (event) {
+                event.preventDefault();
+                var $form = $('#vm').find('form');
+                $form.postJSON(action, this.$data, function (err, r) {
+                    if (err) {
+                        $form.showFormError(err);
+                    }
+                    else {
+                        return location.assign('/?action=books');
+                    }
+                });
+            }
+        }
+    });
+    $('#vm').show();
+}
+$(function () {
+    if (ID) {
+        getJSON('/api/book/' + ID, function (err, book) {
+            if (err) {
+                return fatal(err);
+            }
+            $('#loading').hide();
+            initVM(book);
+        });
+    }
+    else {
+        $('#loading').hide();
+        initVM({
+            name: '',
+            author: '',
+            content: ''
+        });
+    }
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-1-1 uk-margin-bottom">
+        <div class="uk-panel uk-panel-box"> 
+            <ul class="uk-breadcrumb">
+                <li><i class="uk-icon-plus"></i></li>
+                <li><a href="/manage/schedule/create">Schedule</a></li>     
+                <li><a href="/manage/blog/create">Blog</a></li>
+                <li class="uk-active">Reading</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="error" class="uk-width-1-1">
+    </div>
+
+    <div id="loading" class="uk-width-1-1 uk-text-center">
+        <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> Loading...</span>
+    </div>
+
+    <div id="vm" class="uk-width-2-3">
+        <form v-on="submit: submit" class="uk-form uk-form-stacked">
+            <div class="uk-alert uk-alert-danger uk-hidden"></div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">Title:</label>
+                <div class="uk-form-controls">
+                    <input v-model="name" name="name" type="text" placeholder="title" class="uk-width-1-1">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">Author:</label>
+                <div class="uk-form-controls">
+                    <textarea v-model="author" rows="2" name="author" placeholder="author" class="uk-width-1-1" style="resize:none;"></textarea>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">Content:</label>
+                <div class="uk-form-controls">
+                    <textarea v-model="content" rows="16" name="content" placeholder="content" class="uk-width-1-1" style="resize:none;"></textarea>
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-save"></i> Publish</button>
+                <a href="/manage/readings" class="uk-button"><i class="uk-icon-times"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
