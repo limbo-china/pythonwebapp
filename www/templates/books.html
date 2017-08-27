@@ -11,7 +11,7 @@
             <article class="uk-article">
                 <h2>{{ book.name }}</h2>
                 <p class="uk-article-meta">Published {{ book.created_at|datetime}}</p>
-                <p>{{ book.summary }}</p>
+                <p>{{ book.author}}</p>
                 <p><a href="/book/{{ book.id }}">Continue <i class="uk-icon-angle-double-right"></i></a></p>
             </article>
             <hr class="uk-article-divider">
